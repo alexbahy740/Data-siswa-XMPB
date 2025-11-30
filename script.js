@@ -1,21 +1,13 @@
-// Ganti URL_INI dengan URL Web App Anda (yang berakhiran /exec)
-var url = "https://script.google.com/macros/s/AKfycbyDs0l_P7xDtqxETiZG1pwE28LsY6UPPYkDS_rzMVmH21gYKduYz_as3wyGrWRwyheA/exec"; 
+// --- KONFIGURASI ---
+// Ganti dengan URL Web App Google Apps Script Anda setelah deploy (Lihat README)
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDs0l_P7xDtqxETiZG1pwE28LsY6UPPYkDS_rzMVmH21gYKduYz_as3wyGrWRwyheA/exec"; 
 
-fetch(url, {
-  method: "POST",
-  mode: "no-cors",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    action: "add",
-    data: {
-      nama: "Tes Koneksi Console",
-      jk: "L",
-      nisn: "999999",
-      nis: "8888",
-      ttl: "Jakarta, 01-01-2000"
-    }
-  })
-}).then(() => console.log("Terkirim! Cek Sheet sekarang."));
+// Data Mockup Awal (Agar UI tidak kosong saat pertama kali dibuka)
+let studentsData = [
+    { no: 1, nama: "Ahmad Rizky", jk: "L", nisn: "0051234567", nis: "2324001", ttl: "Ambon, 12-05-2007" },
+    { no: 2, nama: "Bunga Pertiwi", jk: "P", nisn: "0051234568", nis: "2324002", ttl: "Masohi, 22-08-2007" },
+    { no: 3, nama: "Citra Lestari", jk: "P", nisn: "0051234569", nis: "2324003", ttl: "Saparua, 10-01-2008" }
+];
 
 // --- FUNGSI UTAMA ---
 
@@ -244,6 +236,4 @@ window.onclick = function(event) {
     if (event.target.classList.contains('modal')) {
         event.target.style.display = "none";
     }
-
 }
-
