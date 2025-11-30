@@ -1,6 +1,6 @@
 // --- KONFIGURASI ---
 // Ganti dengan URL Web App Google Apps Script Anda setelah deploy (Lihat README)
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzC4BzGSb7gzIkK0V2o3EhlAcx51cgquZhn400frCGaaRcSMg6oWYylS-ubDfYsP6M/exec"; 
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzklOL7eYVxA_TyomJrjq1nfJXqPLRmV6BUQT2ww4qA6Xgmt4-jylJqNpY5GvOTb_PH/exec"; 
 
 // Data Mockup Awal (Agar UI tidak kosong saat pertama kali dibuka)
 let studentsData = [
@@ -14,7 +14,7 @@ let studentsData = [
 document.addEventListener("DOMContentLoaded", () => {
     renderTable();
     // Jika URL API sudah diisi, coba ambil data live
-    if (GOOGLE_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbzC4BzGSb7gzIkK0V2o3EhlAcx51cgquZhn400frCGaaRcSMg6oWYylS-ubDfYsP6M/exec") {
+    if (GOOGLE_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbzklOL7eYVxA_TyomJrjq1nfJXqPLRmV6BUQT2ww4qA6Xgmt4-jylJqNpY5GvOTb_PH/exec") {
         fetchDataFromGoogle();
     }
 });
@@ -176,7 +176,7 @@ function handleFileUpload(input) {
 // --- API GOOGLE SHEETS CONNECTION ---
 
 async function sendToAPI(action, payload) {
-    if (GOOGLE_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbzC4BzGSb7gzIkK0V2o3EhlAcx51cgquZhn400frCGaaRcSMg6oWYylS-ubDfYsP6M/exec") {
+    if (GOOGLE_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbzklOL7eYVxA_TyomJrjq1nfJXqPLRmV6BUQT2ww4qA6Xgmt4-jylJqNpY5GvOTb_PH/exec") {
         showLoading(false);
         showToast("Mode Demo: Data disimpan lokal saja.");
         return;
@@ -236,4 +236,5 @@ window.onclick = function(event) {
     if (event.target.classList.contains('modal')) {
         event.target.style.display = "none";
     }
+
 }
