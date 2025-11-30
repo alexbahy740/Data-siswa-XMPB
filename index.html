@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Data Siswa & Ledger - SMKN 1 Maluku Tengah</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Memproses Data...</p>
+    </div>
+
+    <header>
+        <div class="container header-content">
+            <div class="logo-area">
+                <img src="assets/logo.png" alt="Logo SMKN 1 Maluku Tengah" class="school-logo">
+                <div class="school-info">
+                    <h1>SMK NEGERI 1 MALUKU TENGAH</h1>
+                    <p>Manajemen Perkantoran & Layanan Bisnis (MP-LB) - Kelas X</p>
+                </div>
+            </div>
+            <div class="user-profile">
+                <i class="fas fa-user-circle"></i> Admin
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('siswa')">
+                <i class="fas fa-users"></i> Data Siswa
+            </button>
+            <button class="tab-btn" onclick="switchTab('ledger')">
+                <i class="fas fa-book-open"></i> Ledger Nilai
+            </button>
+        </div>
+
+        <section id="tab-siswa" class="tab-content active">
+            <div class="card">
+                <div class="toolbar">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchSiswa" placeholder="Cari Nama, NISN, atau NIS..." onkeyup="searchTable()">
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-secondary" onclick="refreshData()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        <div class="dropdown">
+                            <button class="btn btn-outline"><i class="fas fa-file-import"></i> Import/Export</button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="downloadTemplate('csv')">Download Template CSV</a>
+                                <a href="#" onclick="downloadTemplate('xlsx')">Download Template XLSX</a>
+                                <label for="fileUpload" class="upload-label">Upload Data (CSV/XLSX)</label>
+                                <input type="file" id="fileUpload" accept=".csv, .xlsx, .xls" onchange="handleFileUpload(this)" hidden>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="openModal('addModal')"><i class="fas fa-plus"></i> Tambah Siswa</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table" id="siswaTable">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable(0)">NO <i class="fas fa-sort"></i></th>
+                                <th onclick="sortTable(1)">NAMA <i class="fas fa-sort"></i></th>
+                                <th>JK</th>
+                                <th>NISN</th>
+                                <th>NIS</th>
+                                <th>TEMPAT & TANGGAL LAHIR</th>
+                                <th>AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody id="siswaBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-ledger" class="tab-content">
+            <div class="card">
+                <div class="toolbar">
+                    <div class="filter-group">
+                        <label>Semester:</label>
+                        <select id="semesterSelect" onchange="loadLedger()">
+                            <option value="Ganjil">Ganjil</option>
+                            <option value="Genap">Genap</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-outline" onclick="exportLedgerPDF()"><i class="fas fa-file-pdf"></i> Download PDF</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table zebra" id="ledgerTable">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">NO</th>
+                                <th rowspan="2" class="sticky-col">NAMA SISWA</th>
+                                <th colspan="7" class="group-header">A. UMUM</th>
+                                <th colspan="5" class="group-header">B. KEJURUAN</th>
+                            </tr>
+                            <tr class="sub-header">
+                                <th>Agama</th>
+                                <th>Pancasila</th>
+                                <th>B. Indo</th>
+                                <th>PJOK</th>
+                                <th>Sejarah</th>
+                                <th>Seni</th>
+                                <th>Mulok</th>
+                                <th>Matematika</th>
+                                <th>B. Inggris</th>
+                                <th>Informatika</th>
+                                <th>IPAS</th>
+                                <th>Dasar Kejuruan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledgerBody">
+                            <tr>
+                                 <td colspan="14" style="text-align:center;">Silakan hubungkan Google Sheets untuk melihat nilai.</td>
+                             </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tambah Siswa Baru</h3>
+                <span class="close" onclick="closeModal('addModal')">&times;</span>
+            </div>
+            <form id="addStudentForm" onsubmit="handleAddStudent(event)">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" name="nama" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Jenis Kelamin</label>
+                        <select name="jk" required>
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>NISN</label>
+                        <input type="number" name="nisn" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>NIS</label>
+                        <input type="number" name="nis" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tempat Lahir</label>
+                        <input type="text" name="tempat_lahir" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tanggal Lahir</label>
+                    <input type="date" name="tanggal_lahir" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content small-modal">
+            <div class="modal-header bg-danger">
+                <h3 style="color:white">Hapus Siswa?</h3>
+                <span class="close" onclick="closeModal('deleteModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin menghapus data siswa ini? Tindakan ini tidak dapat dibatalkan.</p>
+                <input type="hidden" id="deleteTargetId">
+                <input type="hidden" id="deleteTargetRow">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Batal</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Ya, Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Berhasil disimpan!</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
